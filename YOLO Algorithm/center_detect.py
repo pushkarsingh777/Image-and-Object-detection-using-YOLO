@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-# Load YOLO model
+
 weights_path = "yolov3.weights"
 cfg_path = "yolov3.cfg"
 names_path = "coco.names"
@@ -12,7 +12,6 @@ with open(names_path, "r") as f:
 colors = np.random.uniform(0, 255, size=(len(classes), 3))
 net = cv2.dnn.readNet(weights_path, cfg_path)
 
-# Capture video from webcam
 cap = cv2.VideoCapture(0)
 
 while True:
@@ -22,7 +21,7 @@ while True:
     
     height, width, _ = frame.shape
     
-    # Convert image into blob for YOLO processing
+  
     blob = cv2.dnn.blobFromImage(frame, 1/255, (416, 416), swapRB=True, crop=False)
     net.setInput(blob)
 
@@ -39,7 +38,7 @@ while True:
             class_id = np.argmax(scores)
             confidence = scores[class_id]
 
-            if confidence > 0.5:  # Confidence threshold
+            if confidence > 0.5: 
                 center_x = int(detection[0] * width)
                 center_y = int(detection[1] * height)
                 w = int(detection[2] * width)
@@ -63,16 +62,15 @@ while True:
             label = f"{classes[class_ids[i]]}: {confidences[i]:.2f}"
             color = colors[class_ids[i]]
 
-            # Draw bounding box
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-            # Draw center point
+           
             cv2.circle(frame, (center_x, center_y), 5, (0, 0, 255), -1)
-            # Display label
+            
             cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-            # Display center coordinates on frame
+            
             cv2.putText(frame, f"({center_x}, {center_y})", (center_x, center_y + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
-            # Print center coordinates in console
+          
             print(f"Object: {classes[class_ids[i]]}, Center: ({center_x}, {center_y})")
 
     cv2.imshow("YOLO Object Detection", frame)
